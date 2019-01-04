@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+set -u
+set -e
+set -x
+
 ###########################
 # Build/download Keycloak #
 ###########################

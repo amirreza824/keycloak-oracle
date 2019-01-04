@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -x
+set -u
+set -e
+
 ##################
 # Add admin user #
 ##################
@@ -63,57 +67,59 @@ fi
 # Lower case DB_VENDOR
 DB_VENDOR=`echo $DB_VENDOR | tr A-Z a-z`
 
-# Detect DB vendor from default host names
-if [ "$DB_VENDOR" == "" ]; then
-    if (getent hosts postgres &>/dev/null); then
-        export DB_VENDOR="postgres"
-    elif (getent hosts mysql &>/dev/null); then
-        export DB_VENDOR="mysql"
-    elif (getent hosts oracle &>/dev/null); then
-        export DB_VENDOR="oracle"
-    elif (getent hosts mariadb &>/dev/null); then
-        export DB_VENDOR="mariadb"
-    fi
-fi
+## Detect DB vendor from default host names
+#if [ "$DB_VENDOR" == "" ]; then
+#    if (getent hosts postgres &>/dev/null); then
+#        export DB_VENDOR="postgres"
+#    elif (getent hosts mysql &>/dev/null); then
+#        export DB_VENDOR="mysql"
+#    elif (getent hosts oracle &>/dev/null); then
+#        export DB_VENDOR="oracle"
+#    elif (getent hosts mariadb &>/dev/null); then
+#        export DB_VENDOR="mariadb"
+#    fi
+#fi
 
-# Detect DB vendor from legacy `*_ADDR` environment variables
-if [ "$DB_VENDOR" == "" ]; then
-    if (printenv | grep '^POSTGRES_ADDR=' &>/dev/null); then
-        export DB_VENDOR="postgres"
-    elif (printenv | grep '^MYSQL_ADDR=' &>/dev/null); then
-        export DB_VENDOR="mysql"
-    elif (printenv | grep '^ORACLE_ADDR=' &>/dev/null); then
-        export DB_VENDOR="oracle"
-    elif (printenv | grep '^MARIADB_ADDR=' &>/dev/null); then
-        export DB_VENDOR="mariadb"
-    fi
-fi
+## Detect DB vendor from legacy `*_ADDR` environment variables
+#if [ "$DB_VENDOR" == "" ]; then
+#    if (printenv | grep '^POSTGRES_ADDR=' &>/dev/null); then
+#        export DB_VENDOR="postgres"
+#    elif (printenv | grep '^MYSQL_ADDR=' &>/dev/null); then
+#        export DB_VENDOR="mysql"
+#    elif (printenv | grep '^ORACLE_ADDR=' &>/dev/null); then
+#        export DB_VENDOR="oracle"
+#    elif (printenv | grep '^MARIADB_ADDR=' &>/dev/null); then
+#        export DB_VENDOR="mariadb"
+#    fi
+#fi
 
 ## Default to H2 if DB type not detected
 #if [ "$DB_VENDOR" == "" ]; then
 #    export DB_VENDOR="h2"
 #fi
-if [ "$DB_VENDOR" == "" ]; then
-    export DB_VENDOR="oracle"
-fi
+#if [ "$DB_VENDOR" == "" ]; then
+#    export DB_VENDOR="oracle"
+#fi
 
 
 # Set DB name
-case "$DB_VENDOR" in
-    postgres)
-        DB_NAME="PostgreSQL";;
-    mysql)
-        DB_NAME="MySQL";;
-    mariadb)
-        DB_NAME="MariaDB";;
-    h2)
-        DB_NAME="Embedded H2";;
-    oracle)
-        DB_NAME="Oracle";;
-    *)
-        echo "Unknown DB vendor $DB_VENDOR"
-        exit 1
-esac
+#case "$DB_VENDOR" in
+#    postgres)
+#        DB_NAME="PostgreSQL";;
+#    mysql)
+#        DB_NAME="MySQL";;
+#    mariadb)
+#        DB_NAME="MariaDB";;
+#    h2)
+#        DB_NAME="Embedded H2";;
+#    oracle)
+#        DB_NAME="Oracle";;
+#    *)
+#        echo "Unknown DB vendor $DB_VENDOR"
+#        exit 1
+#esac
+export DB_VENDOR="oracle"
+export DB_NAME="Oracle"
 
 # Append '?' in the beggining of the string if JDBC_PARAMS value isn't empty
 export JDBC_PARAMS=$(echo ${JDBC_PARAMS} | sed '/^$/! s/^/?/')
@@ -140,9 +146,9 @@ echo ""
 echo "========================================================================="
 echo ""
 
-if [ "$DB_VENDOR" != "h2" ]; then
+#if [ "$DB_VENDOR" != "h2" ]; then
     /bin/sh /opt/jboss/tools/databases/change-database.sh $DB_VENDOR
-fi
+#fi
 
 /opt/jboss/tools/x509.sh
 /opt/jboss/tools/jgroups.sh $JGROUPS_DISCOVERY_PROTOCOL $JGROUPS_DISCOVERY_PROPERTIES
