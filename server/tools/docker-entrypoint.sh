@@ -89,10 +89,14 @@ if [ "$DB_VENDOR" == "" ]; then
     fi
 fi
 
-# Default to H2 if DB type not detected
+## Default to H2 if DB type not detected
+#if [ "$DB_VENDOR" == "" ]; then
+#    export DB_VENDOR="h2"
+#fi
 if [ "$DB_VENDOR" == "" ]; then
-    export DB_VENDOR="h2"
+    export DB_VENDOR="oracle"
 fi
+
 
 # Set DB name
 case "$DB_VENDOR" in
